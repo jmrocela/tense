@@ -4,9 +4,9 @@
  *
  * Handles Responses from the API
  *
- * @package PG_API
+ * @package TENSE_API
  */
-class pg_api_response {
+class tense_response {
 
 	/**
 	 * Response Status
@@ -35,7 +35,7 @@ class pg_api_response {
 	 * @access Public
 	 * @return
 	 */
-	public function __construct(pg_api_request $request) {
+	public function __construct(tense_request $request) {
 		// We know it's JSON so we DECODE IT!!! we should check first
 		if (is_json($request->contents)) {
 			$this->request = json_decode($request->contents);
@@ -57,7 +57,7 @@ class pg_api_response {
 			}
 
 		} else {
-			if (PG_WP_DEBUG) {
+			if (TENSE_DEBUG) {
 				echo '<p>API Call failed because the Response returned is not in JSON format.</p>';
 				die();
 			}

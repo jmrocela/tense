@@ -2,14 +2,14 @@
 /**
  * Core API Object
  *
- * @package PG_API
+ * @package TENSE_API
  */
-require_once PG_WP_API . 'request.php';
-require_once PG_WP_API . 'response.php';
+require_once TENSE_API . 'request.php';
+require_once TENSE_API . 'response.php';
 /**
  * PropertyGuru API
  */
-class pg_api {
+class tense_api {
 
 	/**
 	 * Response Status
@@ -148,15 +148,15 @@ class pg_api {
 	 * @return
 	 */
 	public function action($params = array(), $defaults = array(), $default_params = array()) {
-		// We make an API call
-		$context = ($context) ? $this->getContext(): $context;
+		// Set the endpoint
+		$endpoint = TENSE_API_ENDPOINT;
 		// We assign an ID to every request
-		$params['json_id'] = ($params['json_id']) ? $params['json_id']: time();
+		$params['json_id'] = (@$params['json_id']) ? $params['json_id']: time();
 		$params = array_merge($default_params, $params);
 		// Default Parameters for the Request
 		$params = array_merge($_REQUEST, $params);		
 		extract($this->request($params));
-		$this->request = new pg_api_request($endpoint, $params, $defaults);
+		$this->request = new pg_api_request($endpoint, $action, $params, $defaults);
 		$this->response = $this->request->call();
 		
 		// We parse the response from the request
@@ -168,7 +168,7 @@ class pg_api {
 			return $this->response($this->response);
 		} else {
 			// Else, we throw a nice error
-			if (PG_WP_DEBUG && $action != 'login') {
+			if (TENSE_DEBUG) {
 				echo '<p>API Call failed with status code: ' . $this->status . '</p>';
 			}
 			return false;

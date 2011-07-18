@@ -5,16 +5,16 @@
  * Builds a request from a specific context and uses the
  * Response object to handle responses.
  *
- * @package PG_API
+ * @package TENSE_API
  */
-class pg_api_request {
+class tense_request {
 
 	/**
 	 * API Endpoint
 	 *
 	 * @access Public
 	 */
-	public $endpoint = 'http://api.propertyguru.com.sg/';
+	public $endpoint = null;
 	
 	/**
 	 * Current Context. listing|agents
@@ -36,14 +36,18 @@ class pg_api_request {
 	 * @access Public
 	 * @return
 	 */
-	public function __construct($endpoint = null, $params = array(), $defaults = array()) {//$context, $action, $params = array(), $defaults = array(), $default_params = array()) {
+	public function __construct($endpoint = null, $action = null, $params = array(), $defaults = array()) {//$context, $action, $params = array(), $defaults = array(), $default_params = array()) {
 		// We set where the API would call
-		$this->endpoint .= $endpoint;
+		$this->endpoint = $endpoint . $action;
 		// We check the global request var for similar keys
 		foreach ($params as $key => $value) {
 			$key = strtolower($key);
 			if (in_array($key, $defaults) || !empty($defaults)) {
-				$this->fields[$key] =  $value;
+				if (is_array($value)) {
+					// No arrays please
+				} else {
+					$this->fields[$key] =  $value;
+				}				
 			}
 		}
 	}
@@ -62,7 +66,7 @@ class pg_api_request {
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->fields);
 		$this->contents = curl_exec($ch);		
 		curl_close($ch);
-		return new pg_api_response($this);
+		return new tense_response($this);
 	}
 	
 }

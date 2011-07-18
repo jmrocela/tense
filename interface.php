@@ -2,44 +2,9 @@
 /**
  * API Context Interface
  *
- * @package PG_API
+ * @package TENSE_API
  */
-interface pg_interface {
-
-	/**
-	 * Search the Object
-	 *
-	 * @access Public
-	 */
-	public function search();
-
-	/**
-	 * Create an Entity
-	 *
-	 * @access Public
-	 */
-	public function create();
-
-	/**
-	 * Read an Entity
-	 *
-	 * @access Public
-	 */
-	public function read();
-
-	/**
-	 * Update an Entity
-	 *
-	 * @access Public
-	 */
-	public function update();
-
-	/**
-	 * Delete an Entity
-	 *
-	 * @access Public
-	 */
-	public function delete();
+interface tense_interface {
 	
 	/**
 	 * Builds a Request
