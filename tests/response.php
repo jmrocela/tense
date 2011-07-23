@@ -23,7 +23,7 @@
  */
 require_once 'config.php';
 
-class RequestTestCase extends UnitTestCase {
+class ResponseTestCase extends UnitTestCase {
 	
 	public function setUp() {}
 

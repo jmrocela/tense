@@ -21,11 +21,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-require_once TENSE_API . 'request.php';
-require_once TENSE_API . 'response.php';
-/**
- * PropertyGuru API
- */
 class tense_api {
 
 	/**
@@ -34,6 +29,14 @@ class tense_api {
 	 * @access Private
 	 */
 	private $status = null;
+	
+	/**
+	 * The Endpoint of the Request
+	 *
+	 * @access Private
+	 */
+	private $endpoint = null;
+	
 	
 	/**
 	 * Current Request Action
@@ -76,7 +79,9 @@ class tense_api {
 	 * @access Public
 	 * @return void
 	 */
-	public function __construct() {}
+	public function __construct($endpoint) {
+		$this->endpoint = $endpoint;
+	}
 	
 	/**
 	 * Context Setter
@@ -164,18 +169,16 @@ class tense_api {
 	 * @access Public
 	 * @return
 	 */
-	public function action($params = array(), $defaults = array(), $default_params = array()) {
-		// Set the endpoint
-		$endpoint = TENSE_API_ENDPOINT;
+	public function action($action = null, $params = array(), $defaults = array(), $default_params = array()) {
 		// We assign an ID to every request
 		$params['json_id'] = (@$params['json_id']) ? $params['json_id']: time();
 		$params = array_merge($default_params, $params);
 		// Default Parameters for the Request
 		$params = array_merge($_REQUEST, $params);		
 		extract($this->request($params));
-		$this->request = new pg_api_request($endpoint, $action, $params, $defaults);
+		$this->request = new tense_request($this->endpoint, $action, $params, $defaults);
 		$this->response = $this->request->call();
-		
+
 		// We parse the response from the request
 		$this->status = $this->response->status;
 		

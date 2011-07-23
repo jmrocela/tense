@@ -24,25 +24,53 @@
 require_once 'config.php';
 
 class RequestTestCase extends UnitTestCase {
+
+	public $context = null;
 	
-	public function setUp() {}
+	public function setUp() {
+		// We get the Context Sample
+		require_once 'context.php';
+	}
 	
-	public function testBuildURL() {}
+	public function testCreatContext() {
+		$endpoint = TENSE_TEST_ENDPOINT;
+		$this->context = new context($endpoint);
+		$this->assertIsA($this->context, 'tense_api');
+	}
 	
-	public function testParams() {}
+	public function testRawReturn() {
+		$action = '?controller=working&action=noparams';
+		$return = $this->context->action($action);
+		$this->assertEqual($return->status, 200);
+	}
 	
-	public function testWithDefaults() {}
+	public function testParams() {
 	
-	public function testWithDefaultParams() {}
+	}
 	
-	public function testOverrideParams() {}
+	public function testWithDefaults() {
 	
-	public function testThereIsAServer() {}
+	}
 	
-	public function testCall() {}
+	public function testWithDefaultParams() {
 	
-	public function testThereIsNoServer() {}
-	public function testContext() {}
+	}
+	
+	public function testOverrideParams() {
+	
+	}
+	
+	public function testThereIsAServer() {
+	
+	}
+	
+	public function testCall() {
+	
+	}
+	
+	public function testThereIsNoServer() {
+	
+	}
 	
 }
 

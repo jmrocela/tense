@@ -57,14 +57,16 @@ class tense_request {
 		// We set where the API would call
 		$this->endpoint = $endpoint . $action;
 		// We check the global request var for similar keys
-		foreach ($params as $key => $value) {
-			$key = strtolower($key);
-			if (in_array($key, $defaults) || !empty($defaults)) {
-				if (is_array($value)) {
-					// No arrays please
-				} else {
-					$this->fields[$key] =  $value;
-				}				
+		if ($params) {
+			foreach ($params as $key => $value) {
+				$key = strtolower($key);
+				if (in_array($key, $defaults) || !empty($defaults)) {
+					if (is_array($value)) {
+						// No arrays please
+					} else {
+						$this->fields[$key] =  $value;
+					}				
+				}
 			}
 		}
 	}
@@ -78,10 +80,13 @@ class tense_request {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->endpoint);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->fields);
-		$this->contents = curl_exec($ch);		
+		if ($this->fields) {
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $this->fields);
+		}
+		$this->contents = curl_exec($ch);
+		$this->info = curl_getinfo($ch);
 		curl_close($ch);
 		return new tense_response($this);
 	}

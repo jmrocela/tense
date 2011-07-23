@@ -23,13 +23,18 @@
  */
  
 // Define the Simpletest Path
-define('SIMPLETEST', "D:/Server/libraries/simpletest/");
+define('SIMPLETEST', "../../../libraries/simpletest/");
 
 // Require the Simpletest Autorun script
 require_once SIMPLETEST . 'autorun.php';
 
 // Define Test Parameters
+define('TENSE_TEST_ENDPOINT', 'http://' . $_SERVER['SERVER_NAME'] . '/tense/tests/endpoint.php');
+define('TENSE_DEBUG', 1);
 
-
+require_once '../tense/api.php';
+require_once '../tense/interface.php';
+require_once '../tense/request.php';
+require_once '../tense/response.php';
 
 ?>

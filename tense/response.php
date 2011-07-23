@@ -54,35 +54,16 @@ class tense_response {
 	 */
 	public function __construct(tense_request $request) {
 		// We know it's JSON so we DECODE IT!!! we should check first
-		if (is_json($request->contents)) {
+		if (json_decode($request->contents)) {
 			$this->request = json_decode($request->contents);
-			
-			// Add the JSON ID, heck, I don't know what this does.
-			$this->json_id = $this->request->json_id;
-			
-			if ($this->request->stat == 'ok') {
-				// We convert the supplied status code to something better
-				switch ($this->request->stat) {
-					case "ok":
-						$this->status = 200;
-					break;
-					case "error":
-					default:
-						$this->status = 500;
-					break;
-				}
-			}
-
+			$this->status = $request->info['http_code'];
 		} else {
-			if (TENSE_DEBUG) {
+			if ('TENSE_DEBUG') {
+				header("HTTP/1.0 400 Bad Request");
 				echo '<p>API Call failed because the Response returned is not in JSON format.</p>';
 				die();
 			}
 		}
-	}
-	
-	public function getRequest() {
-		return $this->request;
 	}
 	
 }
