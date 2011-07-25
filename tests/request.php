@@ -26,6 +26,8 @@ require_once 'config.php';
 class RequestTestCase extends UnitTestCase {
 
 	public $context = null;
+
+	public $contextArraySettings = null;
 	
 	public function setUp() {
 		// We get the Context Sample
@@ -38,14 +40,43 @@ class RequestTestCase extends UnitTestCase {
 		$this->assertIsA($this->context, 'tense_api');
 	}
 	
-	public function testRawReturn() {
+	public function testCreatContextWithArraySettings() {
+		$endpoint = TENSE_TEST_ENDPOINT;
+		$settings = array(
+							'endpoint' => $endpoint,
+							'method' => TENSE_REQUEST::POST
+						);
+		$this->contextArraySettings = new context($settings);
+		$this->assertIsA($this->context, 'tense_api');
+	}
+	
+	public function testNoParams() {
 		$action = '?controller=working&action=noparams';
 		$return = $this->context->action($action);
 		$this->assertEqual($return->status, 200);
 	}
 	
 	public function testParams() {
+		$action = '?controller=working&action=withparams';
+		$params = array(
+							'foo' => 1,
+							'bar' => 2,
+							'string_foo' => 'This is a String',
+							'float' => 0.24205
+						);
+		$return = $this->context->action($action, $params);
+		$returned = array(
+							'foo' => $return->contents->foo,
+							'bar' =>$return->contents->bar,
+							'string_foo' => $return->contents->string_foo,
+							'float' => $return->contents->float
+						);
+		$this->assertEqual($returned, $params);
+		$this->assertEqual($return->status, 200);
+	}
 	
+	public function testParamsWithArray() {
+		
 	}
 	
 	public function testWithDefaults() {

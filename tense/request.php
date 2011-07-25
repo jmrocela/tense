@@ -26,19 +26,27 @@
  */
 class tense_request {
 
+	const GET = 'get';
+
+	const POST = 'post';
+
+	const PUT = 'put';
+
+	const DELETE = 'delete';
+
 	/**
 	 * API Endpoint
 	 *
 	 * @access Public
 	 */
 	public $endpoint = null;
-	
+
 	/**
-	 * Current Context. listing|agents
+	 * Request Method
 	 *
 	 * @access Public
 	 */
-	public $context = null;
+	public $method = null;
 	
 	/**
 	 * POST fields for cURL session
@@ -53,19 +61,21 @@ class tense_request {
 	 * @access Public
 	 * @return
 	 */
-	public function __construct($endpoint = null, $action = null, $params = array(), $defaults = array()) {//$context, $action, $params = array(), $defaults = array(), $default_params = array()) {
+	public function __construct($settings = array(), $action = null, $params = array(), $defaults = array()) {
 		// We set where the API would call
-		$this->endpoint = $endpoint . $action;
+		if (is_array($settings)) {
+			$this->endpoint = (isset($settings['endpoint'])) ? $settings['endpoint']: null;
+			$this->method = (isset($settings['method'])) ? $settings['method']: null;
+		} else {
+			$this->endpoint = $settings . $action;
+			$this->method = 'GET';
+		}
 		// We check the global request var for similar keys
 		if ($params) {
 			foreach ($params as $key => $value) {
 				$key = strtolower($key);
-				if (in_array($key, $defaults) || !empty($defaults)) {
-					if (is_array($value)) {
-						// No arrays please
-					} else {
-						$this->fields[$key] =  $value;
-					}				
+				if (in_array($key, $defaults) || empty($defaults)) {
+					$this->fields[$key] =  $value;
 				}
 			}
 		}
@@ -82,8 +92,21 @@ class tense_request {
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		if ($this->fields) {
+			$fields = $this->fields;
+			$postfields = array();
+			foreach ($fields as $field => $value) {
+				if (is_array($value)) {
+					foreach ($value as $key => $val) {
+						if (!is_array($val)) {
+							$postfields[] = $key . '[]=' . $val;
+						}
+					}
+				} else {
+					$postfields[] = $field . '=' . $value;
+				}
+			}
 			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $this->fields);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, implode('&', $postfields));
 		}
 		$this->contents = curl_exec($ch);
 		$this->info = curl_getinfo($ch);

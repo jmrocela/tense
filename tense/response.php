@@ -30,7 +30,7 @@ class tense_response {
 	 *
 	 * @access Public
 	 */
-	public $status = 500;
+	public $status = 200;
 
 	/**
 	 * JSON ID for the Request
@@ -42,9 +42,9 @@ class tense_response {
 	/**
 	 * Request Object
 	 *
-	 * @access Private
+	 * @access Public
 	 */
-	private $request = null;
+	public $contents = null;
 
 	/**
 	 * Constructor
@@ -55,7 +55,7 @@ class tense_response {
 	public function __construct(tense_request $request) {
 		// We know it's JSON so we DECODE IT!!! we should check first
 		if (json_decode($request->contents)) {
-			$this->request = json_decode($request->contents);
+			$this->contents = json_decode($request->contents);
 			$this->status = $request->info['http_code'];
 		} else {
 			if ('TENSE_DEBUG') {

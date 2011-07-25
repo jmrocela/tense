@@ -46,13 +46,6 @@ class tense_api {
 	private $action = null;
 	
 	/**
-	 * Current Context. listing|agents
-	 *
-	 * @access Private
-	 */
-	private $context = null;
-	
-	/**
 	 * Response Object
 	 *
 	 * @access Private
@@ -65,33 +58,6 @@ class tense_api {
 	 * @access Private
 	 */
 	private $request = null;
-	
-	/**
-	 * Raw Content of the Initial Resposne
-	 *
-	 * @access Private
-	 */
-	private $contents = null;
-	
-	/**
-	 * Constructor
-	 *
-	 * @access Public
-	 * @return void
-	 */
-	public function __construct($endpoint) {
-		$this->endpoint = $endpoint;
-	}
-	
-	/**
-	 * Context Setter
-	 *
-	 * @access Public
-	 * @return void
-	 */
-	public function setContext($context) {
-		$this->context = $context;
-	}
 	
 	/**
 	 * Status Setter
@@ -111,26 +77,6 @@ class tense_api {
 	 */
 	public function setAction($action = 'search') {
 		$this->action = $action;
-	}
-	
-	/**
-	 * Content Setter
-	 *
-	 * @access Public
-	 * @return void
-	 */
-	public function setContent($content = 'search') {
-		$this->content = $content;
-	}
-	
-	/**
-	 * Context Getter
-	 *
-	 * @access Public
-	 * @return mixed $context
-	 */
-	public function getContext() {
-		return $this->context;
 	}
 	
 	/**
@@ -154,13 +100,21 @@ class tense_api {
 	}
 	
 	/**
-	 * Content Getter
+	 * Endpoint Setter/Getter
 	 *
 	 * @access Public
-	 * @return void
+	 * @return mixed $endpoint
 	 */
-	public function getContent() {
-		return $this->content;
+	public function endpoint($endpoint = null) {
+		if ($endpoint == null) {
+			return $this->status;
+		} else {
+			$this->endpoint = $endpoint;
+		}
+	}
+	
+	public function __construct($settings) {
+		$this->endpoint = $settings;
 	}
 
 	/**
@@ -173,9 +127,6 @@ class tense_api {
 		// We assign an ID to every request
 		$params['json_id'] = (@$params['json_id']) ? $params['json_id']: time();
 		$params = array_merge($default_params, $params);
-		// Default Parameters for the Request
-		$params = array_merge($_REQUEST, $params);		
-		extract($this->request($params));
 		$this->request = new tense_request($this->endpoint, $action, $params, $defaults);
 		$this->response = $this->request->call();
 
