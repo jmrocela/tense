@@ -98,7 +98,7 @@ class tense_request {
 				if (is_array($value)) {
 					foreach ($value as $key => $val) {
 						if (!is_array($val)) {
-							$postfields[] = $key . '[]=' . $val;
+							$postfields[] = $field . '[]=' . $val;
 						}
 					}
 				} else {

@@ -50,13 +50,13 @@ class RequestTestCase extends UnitTestCase {
 		$this->assertIsA($this->context, 'tense_api');
 	}
 	
-	public function testNoParams() {
+	public function testWithNoParams() {
 		$action = '?controller=working&action=noparams';
 		$return = $this->context->action($action);
 		$this->assertEqual($return->status, 200);
 	}
 	
-	public function testParams() {
+	public function testWithParams() {
 		$action = '?controller=working&action=withparams';
 		$params = array(
 							'foo' => 1,
@@ -72,18 +72,94 @@ class RequestTestCase extends UnitTestCase {
 							'float' => $return->contents->float
 						);
 		$this->assertEqual($returned, $params);
+		$this->assertIsA($this->context, 'tense_api');
 		$this->assertEqual($return->status, 200);
 	}
 	
 	public function testParamsWithArray() {
-		
+		$action = '?controller=working&action=withparams';
+		$params = array(
+							'foo' => 1,
+							'bar' => 2,
+							'string_foo' => 'This is a String',
+							'float' => 0.24205,
+							'array_param' => array(
+															3,
+															4,
+														)
+						);
+		$return = $this->context->action($action, $params);
+		$returned = array(
+							'foo' => $return->contents->foo,
+							'bar' =>$return->contents->bar,
+							'string_foo' => $return->contents->string_foo,
+							'float' => $return->contents->float,
+							'array_param' => $return->contents->array_param
+						);
+		$this->assertEqual($returned, $params);
+		$this->assertIsA($this->context, 'tense_api');
+		$this->assertEqual($return->status, 200);
 	}
 	
 	public function testWithDefaults() {
-	
+		$action = '?controller=working&action=withparams';
+		$defaults = array('foo', 'bar', 'string_foo', 'float');
+		$params = array(
+							'foo' => 1,
+							'bar' => 2,
+							'string_foo' => 'This is a String',
+							'float' => 0.24205,
+							'array_param' => array(
+															3,
+															4,
+														)
+						);
+		$return = $this->context->action($action, $params, $defaults);
+		$returned_wrong = array(
+							'foo' => $return->contents->foo,
+							'bar' =>$return->contents->bar,
+							'string_foo' => $return->contents->string_foo,
+							'float' => $return->contents->float,
+							'array_param' => @$return->contents->array_param
+						);
+		$returned_correct = array(
+							'foo' => $return->contents->foo,
+							'bar' =>$return->contents->bar,
+							'string_foo' => $return->contents->string_foo,
+							'float' => $return->contents->float,
+						);
+		$this->assertNotEqual($returned_wrong, $params);
+		unset($params['array_param']);
+		$this->assertEqual($returned_correct, $params);
+		$this->assertIsA($this->context, 'tense_api');
+		$this->assertEqual($return->status, 200);
 	}
 	
 	public function testWithDefaultParams() {
+		$action = '?controller=working&action=withparams';
+		$default_params = array(
+							'foo' => 1,
+							'bar' => 2,
+							'string_foo' => 'This is a String',
+							'float' => 0.24205
+						);
+		$params = array(
+							'foo' => 5,
+							'bar' => 8,
+						);
+		$return = $this->context->action($action, $params, array(), $default_params);
+		$returned = array(
+							'foo' => $return->contents->foo,
+							'bar' =>$return->contents->bar,
+							'string_foo' => $return->contents->string_foo,
+							'float' => $return->contents->float,
+						);
+		$this->assertEqual($returned, array_merge($default_params, $params));
+		$this->assertIsA($this->context, 'tense_api');
+		$this->assertEqual($return->status, 200);
+	}
+	
+	public function testWithDefaultParamsAndDefaults() {
 	
 	}
 	
@@ -96,6 +172,10 @@ class RequestTestCase extends UnitTestCase {
 	}
 	
 	public function testCall() {
+	
+	}
+	
+	public function testCallFail() {
 	
 	}
 	

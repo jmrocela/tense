@@ -11,12 +11,6 @@ if (isset($_GET['controller']) && isset($_GET['action'])) {
 				case "withparams":
 					echo json_encode($_REQUEST);
 				break;
-				case "witharrayparams":
-					echo json_encode($_GET['params']);
-				break;
-				case "withstatuscode200":
-					echo json_encode($_GET['params']);
-				break;
 			}
 		break;
 		case "broken":
