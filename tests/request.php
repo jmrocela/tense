@@ -160,7 +160,34 @@ class RequestTestCase extends UnitTestCase {
 	}
 	
 	public function testWithDefaultParamsAndDefaults() {
-	
+		$action = '?controller=working&action=withparams';
+		$defaults = array('foo', 'bar', 'string_foo', 'float');
+		$default_params = array(
+							'foo' => 1,
+							'bar' => 2,
+							'string_foo' => 'This is a String',
+							'float' => 0.24205,
+							'array_param' => array(
+															3,
+															4,
+														)
+						);
+		$params = array(
+							'bar' => 8,
+							'string_foo' => 'Another String',
+						);
+		$return = $this->context->action($action, $params, $defaults, $default_params);
+		$returned_correct = array(
+			'foo' => $return->contents->foo,
+			'bar' => $return->contents->bar,
+			'string_foo' => $return->contents->string_foo,
+			'float' => $return->contents->float
+		);
+		$this->assertNotEqual($returned_correct, array_merge($default_params, $params));
+		unset($default_params['array_param']);
+		$this->assertEqual($returned_correct, array_merge($default_params, $params));
+		$this->assertIsA($this->context, 'tense_api');
+		$this->assertEqual($return->status, 200);
 	}
 	
 	public function testOverrideParams() {
