@@ -60,8 +60,7 @@ class tense_response {
 		} else {
 			if ('TENSE_DEBUG') {
 				header("HTTP/1.0 400 Bad Request");
-				echo '<p>API Call failed because the Response returned is not in JSON format.</p>';
-				die();
+				trigger_error('API Call failed because the Response returned is not in JSON format.');
 			}
 		}
 	}

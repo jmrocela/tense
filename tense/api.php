@@ -99,20 +99,6 @@ class tense_api {
 		return $this->action;
 	}
 	
-	/**
-	 * Endpoint Setter/Getter
-	 *
-	 * @access Public
-	 * @return mixed $endpoint
-	 */
-	public function endpoint($endpoint = null) {
-		if ($endpoint == null) {
-			return $this->status;
-		} else {
-			$this->endpoint = $endpoint;
-		}
-	}
-	
 	public function __construct($settings) {
 		$this->endpoint = $settings;
 	}
@@ -144,6 +130,17 @@ class tense_api {
 			}
 			return false;
 		}
+	}
+	
+	public function ping() {
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $this->endpoint);
+		curl_setopt($ch, CURLOPT_NOBODY, true);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+		curl_exec($ch);
+		$status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+		return $status;
 	}
 
 }

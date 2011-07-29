@@ -190,12 +190,16 @@ class RequestTestCase extends UnitTestCase {
 		$this->assertEqual($return->status, 200);
 	}
 	
-	public function testOverrideParams() {
-	
+	public function testThereIsAServer() {
+		$endpoint = TENSE_TEST_ENDPOINT;
+		$context = new context($endpoint);
+		$this->assertEqual($context ->ping(), 200);
 	}
 	
-	public function testThereIsAServer() {
-	
+	public function testThereIsNoServer() {
+		$endpoint = 'http://dummy.doesnt.exist.mock.url/';
+		$context = new context($endpoint);
+		$this->assertNotEqual($context ->ping(), 200);
 	}
 	
 	public function testCall() {
@@ -203,10 +207,6 @@ class RequestTestCase extends UnitTestCase {
 	}
 	
 	public function testCallFail() {
-	
-	}
-	
-	public function testThereIsNoServer() {
 	
 	}
 	
