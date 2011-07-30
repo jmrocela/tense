@@ -28,7 +28,7 @@ interface tense_interface {
 	 *
 	 * @access Public
 	 */
-	public function request($params = array());
+	public function request($endpoint = null, $action = null, $params = array());
 	
 	/**
 	 * Handles a Response

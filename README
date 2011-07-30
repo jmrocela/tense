@@ -1,0 +1,97 @@
+Tense
+A Simple PHP Library to Interact with REST Services
+
+John Rocela
+http://www.iamjamoy.com/
+Installation | Basics | Request | Response | Context | Todo | Support
+
+Tense is a Simple Library to interact with REST Services over HTTP. This library uses the cURL extension on PHP and recognizes JSON results. This library can easily be Extended through Contexts, a layer built on top of the Tense API. These contexts have the ability to build a request and parse responses.
+
+Tense has a small footprint and is very lightweight. Current features are still limited to the GET aspect of the REST protocol, but will be improved on later Iterations.
+Installation
+
+Download the Latest Version at Codepassive's Tense Repository (https://github.com/codepassive/tense) and unzip it to the desired location. Files from the Repository should be in working condition unless explicitly stated.
+
+After unzipping the files, just require_once "tense/tense.php" in your code.
+Basics
+
+Tense logic can be built on Context. These are files that extend the Tense API and is given the ability to do requests and parse responses. A simple Context can be written as such
+
+<?php
+class context extends tense_api implements tense_interface {
+
+	public function request($endpoint = null, $action = null, $params = array()) {
+		// This builds the request Data
+		return array('endpoint' => $endpoint, 'action' => $action, 'params' => $params);
+	}
+	
+	public function response($response = null) {
+		// This parses the returned Data
+		return $response;
+	}
+
+}
+?>
+
+
+The file extends tense_api and uses the tense_interface. This suggests that the context complies with the library.
+
+The public functions request and response are defined in the tense_interface file and is required for the whole thing to work.
+
+YOUR_ENDPOINT_URL is the URL of your Web Service, this should be reachable by HTTP.
+To start a Context, you must first declare it as an object through, new context(YOUR_ENDPOINT_URL); This will return a tense_api object
+
+To do a Call, you can use $this->action($action, $params, $defaults, $default_params), this fires the Request and builds it from your Request method within the Context.
+
+    $action - This is the Action that the endpoint shall be appended with. These is either in the form of controller/method or by a typical request URI
+    $params - The parameters for the specific method. These variables are visible under the $_REQUEST global in PHP
+    $defaults - A collection of keys that will be checked against the params to provide filtering. These are the valid keys that are accepted in your code. These are placed for security
+    $default_params - A collection of Default Values. These default values replace your Parameters or go in place of those if it's not set
+
+Request
+
+This section explains Requests and how it is made.
+
+From our early Context example, we can build requests through this method.
+
+	public function request($endpoint = null, $action = null, $params = array()) {
+		// This builds the request Data
+		return array('endpoint' => $endpoint, 'action' => $action, 'params' => $params);
+	}
+
+
+Basically, you can do validations, routing or checking here if you wanted. Every request comes to this method. just make sure to return the appropriate array when you are done.
+
+Response
+
+This section explains Responses and how it should be used.
+
+From our early Context example, we can parse requests through this method.
+
+	public function response($response = null) {
+		// This parses the returned Data
+		return $response;
+	}
+
+
+The $response variable that is returned here is a tense_response object and contains the following variables
+
+    contents - The JSON_DECODED response. Maybe an Array or an Object.
+    headers - Please see curl_getinfo for more information
+    status - The HTTP status code from the recent request
+
+Tense parses requests through JSON_DECODE thus, a JSON response is appropriate when calling a resource. An exception will be thrown when a response is not in JSON format.
+To be Added
+
+- Although the purpose of this library is to interact with REST services using GET, POST, PUT or DELETE methods, only GET is still supported. This will change really soon.
+
+- Support for XML
+Support
+
+Please take not that this project is still under development. Please refrain from using this library onto a Production Server, as of now, Please use this library for Learning purposes only.
+
+This project is licensed under GPLv3. Read LICENSE for more information
+
+For questions and feature suggestions, please email me at me@iamjamoy.com
+Copyright © 2011 John Rocela. Documentation v1
+https://github.com/codepassive/tense

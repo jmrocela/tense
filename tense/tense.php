@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Tense
+ * Core API Object
  *
  * @package TENSE_API
  *
@@ -21,7 +22,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 class tense_api {
 
 	/**
@@ -152,6 +152,28 @@ class tense_api {
 
 }
 
+/**
+ * API Context Interface
+ *
+ * @package TENSE_API
+ *
+ * Tense, A small PHP Library to interact with REST Services
+ * Copyright (C) 2011 John Rocela
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
 interface tense_interface {
 	
 	/**
@@ -170,14 +192,59 @@ interface tense_interface {
 	
 }
 
+/**
+ * Request
+ *
+ * Builds a request from a specific context and uses the
+ * Response object to handle responses.
+ *
+ * @package TENSE_API
+ *
+ * Tense, A small PHP Library to interact with REST Services
+ * Copyright (C) 2011 John Rocela
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
 class tense_request {
-
+	
+	/**
+	 * Builds a Request
+	 *
+	 * @access Public
+	 */
 	const GET = 'get';
-
+	
+	/**
+	 * Builds a Request
+	 *
+	 * @access Public
+	 */
 	const POST = 'post';
-
+	
+	/**
+	 * Builds a Request
+	 *
+	 * @access Public
+	 */
 	const PUT = 'put';
-
+	
+	/**
+	 * Builds a Request
+	 *
+	 * @access Public
+	 */
 	const DELETE = 'delete';
 
 	/**
@@ -262,6 +329,31 @@ class tense_request {
 	
 }
 
+
+/**
+ * Response
+ *
+ * Handles Responses from the API
+ *
+ * @package TENSE_API
+ *
+ * Tense, A small PHP Library to interact with REST Services
+ * Copyright (C) 2011 John Rocela
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
 class tense_response {
 
 	/**

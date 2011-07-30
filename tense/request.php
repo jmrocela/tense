@@ -25,13 +25,33 @@
  * 
  */
 class tense_request {
-
+	
+	/**
+	 * Builds a Request
+	 *
+	 * @access Public
+	 */
 	const GET = 'get';
-
+	
+	/**
+	 * Builds a Request
+	 *
+	 * @access Public
+	 */
 	const POST = 'post';
-
+	
+	/**
+	 * Builds a Request
+	 *
+	 * @access Public
+	 */
 	const PUT = 'put';
-
+	
+	/**
+	 * Builds a Request
+	 *
+	 * @access Public
+	 */
 	const DELETE = 'delete';
 
 	/**

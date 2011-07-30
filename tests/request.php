@@ -25,16 +25,36 @@ require_once 'config.php';
 
 class RequestTestCase extends UnitTestCase {
 
+	/**
+	 * Context
+	 *
+	 * @access public
+	 */
 	public $context = null;
 
+	/**
+	 * Context with Array Settings
+	 *
+	 * @access public
+	 */
 	public $contextArraySettings = null;
-
+	
+	/**
+	 * Test: Create a Context for the Testcase
+	 *
+	 * @access public
+	 */
 	public function testCreatContext() {
 		$endpoint = TENSE_TEST_ENDPOINT;
 		$this->context = new context($endpoint);
 		$this->assertIsA($this->context, 'tense_api');
 	}
 	
+	/**
+	 * Test: Create a Context for the Testcase with Array Settings
+	 *
+	 * @access public
+	 */
 	public function testCreatContextWithArraySettings() {
 		$endpoint = TENSE_TEST_ENDPOINT;
 		$settings = array(
@@ -45,12 +65,22 @@ class RequestTestCase extends UnitTestCase {
 		$this->assertIsA($this->context, 'tense_api');
 	}
 	
+	/**
+	 * Test: Call a Service without Parameters
+	 *
+	 * @access public
+	 */
 	public function testWithNoParams() {
 		$action = '?controller=working&action=noparams';
 		$return = $this->context->action($action);
 		$this->assertEqual($return->status, 200);
 	}
 	
+	/**
+	 * Test: Call a Service with Parameters
+	 *
+	 * @access public
+	 */
 	public function testWithParams() {
 		$action = '?controller=working&action=withparams';
 		$params = array(
@@ -71,6 +101,11 @@ class RequestTestCase extends UnitTestCase {
 		$this->assertEqual($return->status, 200);
 	}
 	
+	/**
+	 * Test: Call a Service with Parameters including an Array
+	 *
+	 * @access public
+	 */
 	public function testParamsWithArray() {
 		$action = '?controller=working&action=withparams';
 		$params = array(
@@ -96,6 +131,11 @@ class RequestTestCase extends UnitTestCase {
 		$this->assertEqual($return->status, 200);
 	}
 	
+	/**
+	 * Test: Call a Service that is filtered with Default keys
+	 *
+	 * @access public
+	 */
 	public function testWithDefaults() {
 		$action = '?controller=working&action=withparams';
 		$defaults = array('foo', 'bar', 'string_foo', 'float');
@@ -130,6 +170,11 @@ class RequestTestCase extends UnitTestCase {
 		$this->assertEqual($return->status, 200);
 	}
 	
+	/**
+	 * Test: Call a Service that is filtered with Default Parameters
+	 *
+	 * @access public
+	 */
 	public function testWithDefaultParams() {
 		$action = '?controller=working&action=withparams';
 		$default_params = array(
@@ -154,6 +199,11 @@ class RequestTestCase extends UnitTestCase {
 		$this->assertEqual($return->status, 200);
 	}
 	
+	/**
+	 * Test: Call a Service that is filtered with Default Parameters and Keys
+	 *
+	 * @access public
+	 */
 	public function testWithDefaultParamsAndDefaults() {
 		$action = '?controller=working&action=withparams';
 		$defaults = array('foo', 'bar', 'string_foo', 'float');
@@ -185,12 +235,22 @@ class RequestTestCase extends UnitTestCase {
 		$this->assertEqual($return->status, 200);
 	}
 	
+	/**
+	 * Test: Does the Server exist?
+	 *
+	 * @access public
+	 */
 	public function testThereIsAServer() {
 		$endpoint = TENSE_TEST_ENDPOINT;
 		$context = new context($endpoint);
 		$this->assertEqual($context ->ping(), 200);
 	}
 	
+	/**
+	 * Test: The Server doesn't Exist
+	 *
+	 * @access public
+	 */
 	public function testThereIsNoServer() {
 		$endpoint = 'http://dummy.doesnt.exist.mock.url/';
 		$context = new context($endpoint);

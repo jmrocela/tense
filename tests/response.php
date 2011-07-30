@@ -25,20 +25,40 @@ require_once 'config.php';
 
 class ResponseTestCase extends UnitTestCase {
 
+	/**
+	 * Context
+	 *
+	 * @access public
+	 */
 	public $context = null;
-
+	
+	/**
+	 * Test: Create a Context for the Testcase
+	 *
+	 * @access public
+	 */
 	public function testCreatContext() {
 		$endpoint = TENSE_TEST_ENDPOINT;
 		$this->context = new context($endpoint);
 		$this->assertIsA($this->context, 'tense_api');
 	}
-
+	
+	/**
+	 * Test: See if we have a Proper Response
+	 *
+	 * @access public
+	 */
 	public function testHasResponse() {
 		$action = '?controller=working&action=noparams';
 		$return = $this->context->action($action);
 		$this->assertEqual($return->status, 200);
 	}
-
+	
+	/**
+	 * Test: See if we have a Proper Response Header
+	 *
+	 * @access public
+	 */
 	public function testHasResponseHeader() {
 		$action = '?controller=working&action=noparams';
 		$return = $this->context->action($action);
@@ -48,6 +68,11 @@ class ResponseTestCase extends UnitTestCase {
 		}
 	}
 	
+	/**
+	 * Test: See what will happen if there is a Bad Request
+	 *
+	 * @access public
+	 */
 	public function testResponseIsBadRequest() {
 		$this->expectException();
 		$action = '?controller=broken&action=badrequest';

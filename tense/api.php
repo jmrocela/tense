@@ -113,7 +113,8 @@ class tense_api {
 		// We assign an ID to every request
 		$params['json_id'] = (@$params['json_id']) ? $params['json_id']: time();
 		$params = array_merge($default_params, $params);
-		$this->request = new tense_request($this->endpoint, $action, $params, $defaults);
+		extract($this->request($this->endpoint, $action, $params));
+		$this->request = new tense_request($endpoint, $action, $params, $defaults);
 		$this->response = $this->request->call();
 
 		// We parse the response from the request
