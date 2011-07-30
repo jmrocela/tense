@@ -28,12 +28,7 @@ class RequestTestCase extends UnitTestCase {
 	public $context = null;
 
 	public $contextArraySettings = null;
-	
-	public function setUp() {
-		// We get the Context Sample
-		require_once 'context.php';
-	}
-	
+
 	public function testCreatContext() {
 		$endpoint = TENSE_TEST_ENDPOINT;
 		$this->context = new context($endpoint);
@@ -200,14 +195,6 @@ class RequestTestCase extends UnitTestCase {
 		$endpoint = 'http://dummy.doesnt.exist.mock.url/';
 		$context = new context($endpoint);
 		$this->assertNotEqual($context ->ping(), 200);
-	}
-	
-	public function testCall() {
-	
-	}
-	
-	public function testCallFail() {
-	
 	}
 	
 }

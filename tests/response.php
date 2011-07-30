@@ -24,18 +24,36 @@
 require_once 'config.php';
 
 class ResponseTestCase extends UnitTestCase {
-	
-	public function setUp() {}
 
-	public function testHasResponse() {}
-	
-	public function testResponseIsJSON() {}
-	
-	public function testResponseIsNotJSON() {}
+	public $context = null;
 
-	public function testHasResponseHeader() {}
+	public function testCreatContext() {
+		$endpoint = TENSE_TEST_ENDPOINT;
+		$this->context = new context($endpoint);
+		$this->assertIsA($this->context, 'tense_api');
+	}
 
-	public function testResponseStatus() {}
+	public function testHasResponse() {
+		$action = '?controller=working&action=noparams';
+		$return = $this->context->action($action);
+		$this->assertEqual($return->status, 200);
+	}
+
+	public function testHasResponseHeader() {
+		$action = '?controller=working&action=noparams';
+		$return = $this->context->action($action);
+		$keys = array("url","content_type","http_code","header_size","request_size","filetime","ssl_verify_result","redirect_count","total_time","namelookup_time","connect_time","pretransfer_time","size_upload","size_download","speed_download","speed_upload","download_content_length","upload_content_length","starttransfer_time","redirect_time","certinfo");
+		foreach ($keys as $key) {
+			$this->assertTrue(array_key_exists($key, $return->headers));
+		}
+	}
+	
+	public function testResponseIsBadRequest() {
+		$this->expectException();
+		$action = '?controller=broken&action=badrequest';
+		$return = $this->context->action($action);
+		$this->assertEqual($return->status, 400);
+	}
 	
 }
 

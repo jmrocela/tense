@@ -37,4 +37,7 @@ require_once '../tense/interface.php';
 require_once '../tense/request.php';
 require_once '../tense/response.php';
 
+// We get the Context Sample
+require_once 'context.php';
+
 ?>

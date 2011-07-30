@@ -3,7 +3,8 @@
 if (isset($_GET['controller']) && isset($_GET['action'])) {
 	switch ($_GET['controller']) {
 		case "working":
-			header("HTTP/1.0 200 OK");
+			header("HTTP/1.1 200 OK");
+			header("Content-Type: text/json");
 			switch ($_GET['action']) {
 				case "noparams":
 					echo json_encode(array(1));
@@ -15,19 +16,10 @@ if (isset($_GET['controller']) && isset($_GET['action'])) {
 		break;
 		case "broken":
 			switch ($_GET['action']) {
-				case "notjson":
+				case "badrequest":
+					header("HTTP/1.1 400 Bad Request");
+					header("Content-Type: text/html");
 					echo 'This is not a JSON response';
-				break;
-				case "withstatuscode403":
-					header("HTTP/1.0 403 Forbidden");
-					die();
-				break;
-				case "withstatuscode401":
-					header("HTTP/1.0 404 Unauthorized");
-					die();
-				break;
-				case "withstatuscode405":
-					header("HTTP/1.0 405 Method Not Allowed");
 					die();
 				break;
 			}

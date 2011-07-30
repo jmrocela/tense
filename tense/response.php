@@ -56,11 +56,11 @@ class tense_response {
 		// We know it's JSON so we DECODE IT!!! we should check first
 		if (json_decode($request->contents)) {
 			$this->contents = json_decode($request->contents);
+			$this->headers = $request->info;
 			$this->status = $request->info['http_code'];
 		} else {
 			if ('TENSE_DEBUG') {
-				header("HTTP/1.0 400 Bad Request");
-				trigger_error('API Call failed because the Response returned is not in JSON format.');
+				throw new Exception('API Call failed because the Response returned is not in JSON format. Server returned with: ' . $request->contents);
 			}
 		}
 	}
