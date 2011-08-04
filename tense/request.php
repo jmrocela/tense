@@ -68,6 +68,22 @@ class tense_request {
 	 */
 	public $method = null;
 	
+	public $auth = null;
+	
+	public $headers = null;
+	
+	public $username = null;
+	
+	public $password = null;
+	
+	public $referer = null;
+	
+	public $useragent= null;
+	
+	public $file = null;
+	
+	public $binarytransfer = null;
+	
 	/**
 	 * POST fields for cURL session
 	 *
@@ -84,8 +100,16 @@ class tense_request {
 	public function __construct($settings = array(), $action = null, $params = array(), $defaults = array()) {
 		// We set where the API would call
 		if (is_array($settings)) {
-			$this->endpoint = (isset($settings['endpoint'])) ? $settings['endpoint']: null;
-			$this->method = (isset($settings['method'])) ? $settings['method']: null;
+			$this->endpoint = (isset($settings['endpoint'])) ? $settings['endpoint'] . $action: null;
+			$this->method = (isset($settings['method'])) ? $settings['method']: 'GET';
+			$this->auth = (isset($settings['auth'])) ? $settings['auth']: null;
+			$this->headers = (isset($settings['headers'])) ? $settings['headers']: null;
+			$this->username = (isset($settings['username'])) ? $settings['username']: null;
+			$this->password = (isset($settings['password'])) ? $settings['password']: null;
+			$this->binarytransfer = (isset($settings['binarytransfer'])) ? $settings['binarytransfer']: 0;
+			$this->file = (isset($settings['file'])) ? $settings['file']: null;
+			$this->referer = (isset($settings['referer'])) ? $settings['referer']: null;
+			$this->useragent = (isset($settings['useragent'])) ? $settings['useragent']: null;
 		} else {
 			$this->endpoint = $settings . $action;
 			$this->method = 'GET';
@@ -108,9 +132,20 @@ class tense_request {
 	 */
 	public function call() {
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->endpoint);
+		if ($this->headers) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
+		}
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		if ($this->referer) {
+			curl_setopt($ch, CURLOPT_REFERER, $this->referer);
+		}
+		if ($this->useragent) {
+			curl_setopt($ch, CURLOPT_USERAGENT, $this->useragent);
+		}
+		if ($this->username && $this->password) {
+			curl_setopt($ch, CURLOPT_USERPWD, $this->username . ":" . $this->password);
+		}
 		if ($this->fields) {
 			$fields = $this->fields;
 			$postfields = array();
@@ -122,12 +157,31 @@ class tense_request {
 						}
 					}
 				} else {
-					$postfields[] = $field . '=' . $value;
+					$postfields[] = urlencode($field) . '=' .urlencode($value);
 				}
 			}
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, implode('&', $postfields));
 		}
+		switch ($this->method) {
+			case "GET":
+				$this->endpoint .= '&' . implode('&', $postfields);
+			break; 
+			case "POST":
+				curl_setopt($ch, CURLOPT_POST, 1);	
+				curl_setopt($ch, CURLOPT_POSTFIELDS, implode('&', $postfields));
+			break; 
+			case "PUT":
+				curl_setopt($ch, CURLOPT_PUT, 1);	
+				curl_setopt($ch, CURLOPT_BINARYTRANSFER, $this->binarytransfer);
+				if ($this->username && $this->password) {
+					curl_setopt($ch, CURLOPT_INFILE, $this->file);
+					curl_setopt($ch, CURLOPT_INFILESIZE, strlen($this->file));
+				}
+			break; 
+			case "DELETE":
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');	
+			break; 
+		}
+		curl_setopt($ch, CURLOPT_URL, $this->endpoint);
 		$this->contents = curl_exec($ch);
 		$this->info = curl_getinfo($ch);
 		curl_close($ch);
