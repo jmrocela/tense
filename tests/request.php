@@ -303,6 +303,25 @@ class RequestTestCase extends UnitTestCase {
 	}
 	
 	/**
+	 * Let's see if it can pass useragent data too
+	 *
+	 * @access public
+	 */
+	public function testWithUserAgent() {
+		$action = '?controller=working&action=useragent';
+		$endpoint = TENSE_TEST_ENDPOINT;
+		$settings = array(
+							'endpoint' => $endpoint,
+							'method' => TENSE_REQUEST::POST,
+							'useragent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0/'
+						);
+		$this->contextArraySettings = new context($settings);
+		$return = $this->contextArraySettings->action($action);
+		$this->assertEqual($return->contents->REFERER, 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox/5.0/');
+		$this->assertIsA($this->contextArraySettings, 'tense_api');
+	}
+	
+	/**
 	 * Test with Basic Authentication
 	 *
 	 * @access public
@@ -342,26 +361,26 @@ class RequestTestCase extends UnitTestCase {
 		$this->assertEqual($return, 401);
 	}
 	
-	public function testWithUserAgent() {
-	
-	}
-	
-	public function testPost() {
-	
-	}
-	
-	public function testPostUpload() {
-	
-	}
-	
+	/**
+	 * Test  using the PUT method
+	 *
+	 * @access public
+	 */
 	public function testPut() {
-	
-	}
-	
-	public function testDelete() {
-	
-	}
-	
+		$action = '?controller=working&action=put';
+		$endpoint = TENSE_TEST_ENDPOINT;
+		chdir(dirname(__FILE__));
+		$settings = array(
+							'endpoint' => $endpoint,
+							'method' => TENSE_REQUEST::PUT,
+							'file' => 'upload.txt',
+							'binarytransfer' => 1
+						);
+		$this->contextArraySettings = new context($settings);
+		$return = $this->contextArraySettings->action($action);
+		$this->assertIsA($this->contextArraySettings, 'tense_api');
+		$this->assertEqual($return->status, 200);
+	}	
 	
 	
 }

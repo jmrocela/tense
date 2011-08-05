@@ -210,14 +210,18 @@ class tense_request {
 			$fields = $this->fields;
 			$postfields = array();
 			foreach ($fields as $field => $value) {
-				if (is_array($value)) {
-					foreach ($value as $key => $val) {
-						if (!is_array($val)) {
-							$postfields[] = $field . '[]=' . $val;
-						}
+				if ($this->method == 'GET') {
+					if (is_array($value)) {
+							foreach ($value as $key => $val) {
+								if (!is_array($val)) {
+									$postfields[] = $field . '[]=' . $val;
+								}
+							}
+					} else {
+						$postfields[] = urlencode($field) . '=' .urlencode($value);
 					}
 				} else {
-					$postfields[] = urlencode($field) . '=' .urlencode($value);
+					$postfields[$field] = $value;
 				}
 			}
 		}
@@ -229,18 +233,21 @@ class tense_request {
 			break; 
 			case "POST":
 				curl_setopt($ch, CURLOPT_POST, 1);	
-				curl_setopt($ch, CURLOPT_POSTFIELDS, implode('&', $postfields));
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);
 			break; 
 			case "PUT":
 				curl_setopt($ch, CURLOPT_PUT, 1);	
-				curl_setopt($ch, CURLOPT_BINARYTRANSFER, $this->binarytransfer);
-				if ($this->username && $this->password) {
-					curl_setopt($ch, CURLOPT_INFILE, $this->file);
-					curl_setopt($ch, CURLOPT_INFILESIZE, strlen($this->file));
+				if ($this->file) {
+					curl_setopt($ch, CURLOPT_BINARYTRANSFER, $this->binarytransfer);
+					curl_setopt($ch, CURLOPT_INFILE, fopen($this->file, "r"));
+					curl_setopt($ch, CURLOPT_INFILESIZE, filesize($this->file));
+				} else {
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);
 				}
 			break; 
 			case "DELETE":
 				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');	
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);
 			break; 
 		}
 		curl_setopt($ch, CURLOPT_URL, $this->endpoint);

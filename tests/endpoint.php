@@ -18,6 +18,21 @@ if (isset($_GET['controller']) && isset($_GET['action'])) {
 				case "withreferer":
 					echo json_encode(array('REFERER' => $_SERVER['HTTP_REFERER']));
 				break;
+				case "useragent":
+					echo json_encode(array('REFERER' => $_SERVER['HTTP_USER_AGENT']));
+				break;
+				case "put":
+					// NOT TESTED WITH PUT YET
+					$putdata = fopen("php://input", "r");
+					if($putdata) {
+						header("HTTP/1.1 200 OK");
+						echo json_encode(1);
+					}
+					else {
+						header("HTTP/1.1 404 Failed"); 
+						echo json_encode(0);
+					}
+				break;
 				case "requireauthentication":
 					if ($_SERVER['PHP_AUTH_USER'] == 'user' && $_SERVER['PHP_AUTH_PW'] == 'password') {
 						header("HTTP/1.1 200 OK");
