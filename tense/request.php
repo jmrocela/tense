@@ -31,28 +31,42 @@ class tense_request {
 	 *
 	 * @access Public
 	 */
-	const GET = 'get';
+	const GET = 'GET';
 	
 	/**
 	 * Builds a Request
 	 *
 	 * @access Public
 	 */
-	const POST = 'post';
+	const POST = 'POST';
 	
 	/**
 	 * Builds a Request
 	 *
 	 * @access Public
 	 */
-	const PUT = 'put';
+	const PUT = 'PUT';
 	
 	/**
 	 * Builds a Request
 	 *
 	 * @access Public
 	 */
-	const DELETE = 'delete';
+	const DELETE = 'DELETE';
+	
+	/**
+	 * Abstract for the CURLAUTH_BASIC constant
+	 *
+	 * @access Public
+	 */
+	const AUTH_BASIC = CURLAUTH_BASIC;
+	
+	/**
+	 * Abstract for the CURLAUTH_ANY constant
+	 *
+	 * @access Public
+	 */
+	const AUTH_ANY = CURLAUTH_ANY;
 
 	/**
 	 * API Endpoint
@@ -67,21 +81,61 @@ class tense_request {
 	 * @access Public
 	 */
 	public $method = null;
-	
+
+	/**
+	 * Authentication Method
+	 *
+	 * @access Public
+	 */
 	public $auth = null;
-	
+
+	/**
+	 * Custom Headers
+	 *
+	 * @access Public
+	 */
 	public $headers = null;
-	
+
+	/**
+	 * Username for Authentication
+	 *
+	 * @access Public
+	 */
 	public $username = null;
-	
+
+	/**
+	 * Password for Authentication
+	 *
+	 * @access Public
+	 */
 	public $password = null;
-	
+
+	/**
+	 * Referer
+	 *
+	 * @access Public
+	 */
 	public $referer = null;
-	
+
+	/**
+	 * User Agent
+	 *
+	 * @access Public
+	 */
 	public $useragent= null;
-	
+
+	/**
+	 * The file(s) to be uploaded
+	 *
+	 * @access Public
+	 */
 	public $file = null;
-	
+
+	/**
+	 * Binary Transfer Flag
+	 *
+	 * @access Public
+	 */
 	public $binarytransfer = null;
 	
 	/**
@@ -143,7 +197,13 @@ class tense_request {
 		if ($this->useragent) {
 			curl_setopt($ch, CURLOPT_USERAGENT, $this->useragent);
 		}
+		if ($this->auth) {
+			curl_setopt($ch, CURLOPT_HTTPAUTH, $this->auth);
+		}		
 		if ($this->username && $this->password) {
+			if (!$this->auth) {
+				curl_setopt($ch, CURLOPT_HTTPAUTH, TENSE_REQUEST::AUTH_BASIC);
+			}
 			curl_setopt($ch, CURLOPT_USERPWD, $this->username . ":" . $this->password);
 		}
 		if ($this->fields) {
@@ -163,7 +223,9 @@ class tense_request {
 		}
 		switch ($this->method) {
 			case "GET":
-				$this->endpoint .= '&' . implode('&', $postfields);
+				curl_setopt($ch, CURLOPT_POST, 0);	
+				$hasURI = (strpos($this->endpoint, '?') === false) ? '?': '&';
+				$this->endpoint .= $hasURI . implode('&', $postfields);
 			break; 
 			case "POST":
 				curl_setopt($ch, CURLOPT_POST, 1);	

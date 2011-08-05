@@ -62,7 +62,7 @@ class RequestTestCase extends UnitTestCase {
 							'method' => TENSE_REQUEST::POST
 						);
 		$this->contextArraySettings = new context($settings);
-		$this->assertIsA($this->context, 'tense_api');
+		$this->assertIsA($this->contextArraySettings, 'tense_api');
 	}
 	
 	/**
@@ -256,6 +256,113 @@ class RequestTestCase extends UnitTestCase {
 		$context = new context($endpoint);
 		$this->assertNotEqual($context ->ping(), 200);
 	}
+	
+	/**
+	 * Let's See if the library accepts custom headers when passed
+	 *
+	 * @access public
+	 */
+	public function testCustomHeaders() {
+		$action = '?controller=working&action=customheaders';
+		$endpoint = TENSE_TEST_ENDPOINT;
+		$settings = array(
+							'endpoint' => $endpoint,
+							'method' => TENSE_REQUEST::POST,
+							'headers' => array(
+												'X-TENSE-HEADER: tense_test',
+												'X-FOO: bar',
+											)
+						);
+		$this->contextArraySettings = new context($settings);
+		$return = $this->contextArraySettings->action($action);
+		$returned= array(
+				'HTTP_X_TENSE_HEADER' => $return->contents->HTTP_X_TENSE_HEADER, 
+				'HTTP_X_FOO' => $return->contents->HTTP_X_FOO
+		);
+		$this->assertEqual($returned, array('HTTP_X_TENSE_HEADER' => 'tense_test', 'HTTP_X_FOO' => 'bar'));
+		$this->assertIsA($this->contextArraySettings, 'tense_api');
+	}
+	
+	/**
+	 * Let's See if it can pass custom referers as well
+	 *
+	 * @access public
+	 */
+	public function testWithReferer() {
+		$action = '?controller=working&action=withreferer';
+		$endpoint = TENSE_TEST_ENDPOINT;
+		$settings = array(
+							'endpoint' => $endpoint,
+							'method' => TENSE_REQUEST::POST,
+							'referer' => 'http://www.spoof.url.com/'
+						);
+		$this->contextArraySettings = new context($settings);
+		$return = $this->contextArraySettings->action($action);
+		$this->assertEqual($return->contents->REFERER, 'http://www.spoof.url.com/');
+		$this->assertIsA($this->contextArraySettings, 'tense_api');
+	}
+	
+	/**
+	 * Test with Basic Authentication
+	 *
+	 * @access public
+	 */
+	public function testWithAuthentication() {
+		$action = '?controller=working&action=requireauthentication';
+		$endpoint = TENSE_TEST_ENDPOINT;
+		$settings = array(
+							'endpoint' => $endpoint,
+							'method' => TENSE_REQUEST::POST,
+							'username' => 'user',
+							'password' => 'password'
+						);
+		$this->contextArraySettings = new context($settings);
+		$return = $this->contextArraySettings->action($action);
+		$this->assertEqual($return->contents, 1);
+		$this->assertIsA($this->contextArraySettings, 'tense_api');
+	}
+	
+	/**
+	 * Test with Failing Authentication
+	 *
+	 * @access public
+	 */
+	public function testWithWrongAuthentication() {
+		$action = '?controller=working&action=requireauthentication';
+		$endpoint = TENSE_TEST_ENDPOINT;
+		$settings = array(
+							'endpoint' => $endpoint,
+							'method' => TENSE_REQUEST::POST,
+							'username' => 'user',
+							'password' => 'wrongpassword'
+						);
+		$this->contextArraySettings = new context($settings);
+		$return = $this->contextArraySettings->action($action);
+		$this->assertIsA($this->contextArraySettings, 'tense_api');
+		$this->assertEqual($return, 401);
+	}
+	
+	public function testWithUserAgent() {
+	
+	}
+	
+	public function testPost() {
+	
+	}
+	
+	public function testPostUpload() {
+	
+	}
+	
+	public function testPut() {
+	
+	}
+	
+	public function testDelete() {
+	
+	}
+	
+	
 	
 }
 

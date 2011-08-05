@@ -54,7 +54,7 @@ class tense_response {
 	 */
 	public function __construct(tense_request $request) {
 		// We know it's JSON so we DECODE IT!!! we should check first
-		if (json_decode($request->contents)) {
+		if (empty($request->contents) || json_decode($request->contents)) {
 			$this->contents = json_decode($request->contents);
 			$this->headers = $request->info;
 			$this->status = $request->info['http_code'];

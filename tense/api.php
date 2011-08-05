@@ -129,7 +129,7 @@ class tense_api {
 			if (TENSE_DEBUG) {
 				echo '<p>API Call failed with status code: ' . $this->status . '</p>';
 			}
-			return false;
+			return $this->status;
 		}
 	}
 
